@@ -66,7 +66,8 @@ class SubscriberListFragment : Fragment(R.layout.subscriber_list_fragment) {
 
     private fun configureViewListeners() {
         fabAddSubscriber.setOnClickListener {
-            findNavController().navigateWithAnimations(R.id.action_subscriberListFragment_to_subscriberFragment)
+            val directions = SubscriberListFragmentDirections.actionSubscriberListFragmentToSubscriberFragment(null)
+            findNavController().navigateWithAnimations(directions)
         }
     }
 
