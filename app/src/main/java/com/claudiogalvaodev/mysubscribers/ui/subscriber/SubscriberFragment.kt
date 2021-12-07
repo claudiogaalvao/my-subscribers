@@ -31,6 +31,7 @@ class SubscriberFragment : Fragment(R.layout.subscriber_fragment) {
         }
     }
     private lateinit var buttonAdd: Button
+    private lateinit var buttonDelete: Button
     private lateinit var inputName: TextInputEditText
     private lateinit var inputEmail: TextInputEditText
     private val args: SubscriberFragmentArgs by navArgs()
@@ -43,6 +44,7 @@ class SubscriberFragment : Fragment(R.layout.subscriber_fragment) {
             buttonAdd.text = getString(R.string.subscriber_button_update)
             inputName.setText(subscriber.name)
             inputEmail.setText(subscriber.email)
+            buttonDelete.visibility = View.VISIBLE
         }
 
         observeEvents()
@@ -51,6 +53,7 @@ class SubscriberFragment : Fragment(R.layout.subscriber_fragment) {
 
     private fun setViewReferences(view: View) {
         buttonAdd = view.findViewById(R.id.button_add)
+        buttonDelete = view.findViewById(R.id.button_delete)
         inputName = view.findViewById(R.id.input_name)
         inputEmail = view.findViewById(R.id.input_email)
     }
@@ -58,11 +61,9 @@ class SubscriberFragment : Fragment(R.layout.subscriber_fragment) {
     private fun observeEvents() {
         viewModel.subscriberStateEventData.observe(viewLifecycleOwner) { subscriberState ->
             when(subscriberState) {
-                is SubscriberViewModel.SubscriberState.Inserted -> {
-                    findNavController().popBackStack()
-                    hideKeyboard()
-                }
-                is SubscriberViewModel.SubscriberState.Updated -> {
+                is SubscriberViewModel.SubscriberState.Inserted,
+                is SubscriberViewModel.SubscriberState.Updated,
+                is SubscriberViewModel.SubscriberState.Deleted -> {
                     findNavController().popBackStack()
                     hideKeyboard()
                 }
@@ -95,6 +96,10 @@ class SubscriberFragment : Fragment(R.layout.subscriber_fragment) {
             if(name.isNotEmpty() && email.isNotEmpty()) {
                 viewModel.addOrUpdateSubscriber(args.subscriber?.id ?: 0, name, email)
             }
+        }
+
+        buttonDelete.setOnClickListener {
+            viewModel.deleteSubscriber(args.subscriber?.id ?: 0)
         }
     }
 
